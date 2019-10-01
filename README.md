@@ -121,8 +121,8 @@ similar methods for logging at various levels. The methods allow for text messag
 Here's an example of using a MapleLogger instance versus an SLF4J logger instances:
 
 ```java
-Logger slf4jLogger = ...
-MapleLogger<Schema> mapleLogger = ...
+Logger slf4jLogger = LoggerFactory.getLogger(Foo.class);
+MapleLogger<Schema> mapleLogger = MapleFactory.getLogger(Foo.class, Schema.class);
 
 // logging only fields/values
 slf4jLogger.info("name={} age={}", nameStr, theAge);

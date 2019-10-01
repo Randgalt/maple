@@ -17,6 +17,7 @@ package io.soabase.maple;
 
 import io.soabase.maple.api.Names;
 import io.soabase.maple.api.NamesValues;
+import io.soabase.maple.api.Statement;
 import io.soabase.maple.api.exceptions.InvalidSchemaException;
 import io.soabase.maple.api.exceptions.MissingSchemaValueException;
 import io.soabase.maple.core.Generator;
@@ -31,6 +32,7 @@ import io.soabase.maple.spi.MetaInstance;
 import io.soabase.maple.spi.StandardNamesBuilder;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -115,6 +117,17 @@ class TestGeneration {
         assertThat(names.nthName(1)).isEqualTo("a");
         assertThat(names.nthName(2)).isEqualTo("b");
         assertThat(names.nthName(3)).isEqualTo("c");
+    }
+
+    @Test
+    void testStreamingNamesValues() {
+        Names names = buildNames(BasicSchema.class);
+        MetaInstance<BasicSchema> metaInstance = generate(names, BasicSchema.class);
+        Statement<BasicSchema> statement = s -> s.name("n").qty(10);
+        String result = statement.toNamesValues(metaInstance).stream()
+                .map(nameValue -> nameValue.name() + "=" + nameValue.value())
+                .collect(Collectors.joining("|"));
+        assertThat(result).isEqualTo("name=n|qty=10");
     }
 
     private <T> MetaInstance<T> generate(Names names, Class<T> clazz) {

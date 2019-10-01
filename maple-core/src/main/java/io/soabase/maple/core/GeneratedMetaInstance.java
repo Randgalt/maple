@@ -56,27 +56,7 @@ class GeneratedMetaInstance<T> implements MetaInstance<T> {
 
     @Override
     public NamesValues toNamesValues(T instance) {
-        Object[] arguments = ((Instance) instance).arguments;
-        return new NamesValues() {
-            @Override
-            public int qty() {
-                return names.qty();
-            }
-
-            @Override
-            public String nthName(int n) {
-                return names.nthName(n);
-            }
-
-            @Override
-            public Object nthValue(int n) {
-                return arguments[n];
-            }
-
-            @Override
-            public boolean nthIsRequired(int n) {
-                return names.nthIsRequired(n);
-            }
-        };
+        return new NamesValuesImp(names, ((Instance) instance).arguments);
     }
+
 }

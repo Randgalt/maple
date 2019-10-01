@@ -20,9 +20,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.*;
 import io.soabase.maple.api.LevelLogger;
 import io.soabase.maple.api.MapleFormatter;
+import io.soabase.maple.api.NameValue;
 import io.soabase.maple.api.NamesValues;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.fasterxml.jackson.databind.node.JsonNodeType.*;
 
@@ -143,6 +145,11 @@ public class ModelFormatter implements MapleFormatter {
             @Override
             public Object nthValue(int n) {
                 return appliedValues.get(n);
+            }
+
+            @Override
+            public Stream<NameValue> stream() {
+                return Stream.empty();
             }
         };
         formatter.apply(logger, applied, mainMessage, t);
