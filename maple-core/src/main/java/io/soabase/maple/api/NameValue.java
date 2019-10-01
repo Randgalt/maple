@@ -15,13 +15,8 @@
  */
 package io.soabase.maple.api;
 
-import java.util.stream.Stream;
+public interface NameValue {
+    String name();
 
-public interface NamesValues extends Names, Values {
-    /**
-     * Utility - return a stream of the name/value pairs
-     *
-     * @return stream of name/value
-     */
-    Stream<NameValue> stream();
+    Object value();
 }

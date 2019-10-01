@@ -33,10 +33,7 @@ public class StandardMapleSpi implements MapleSpi {
 
     @Override
     public <T> void consume(LevelLogger levelLogger, String mainMessage, Throwable t, Statement<T> statement, MetaInstance<T> metaInstance) {
-        T instance = metaInstance.newSchemaInstance();
-        statement.handle(instance);
-
-        NamesValues namesValues = metaInstance.toNamesValues(instance);
+        NamesValues namesValues = statement.toNamesValues(metaInstance);
         validateRequired(namesValues);
         metaInstance.formatter().apply(levelLogger, namesValues, mainMessage, t);
     }
