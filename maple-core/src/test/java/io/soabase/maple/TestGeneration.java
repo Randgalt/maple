@@ -15,6 +15,7 @@
  */
 package io.soabase.maple;
 
+import io.soabase.maple.api.MapleFormatter;
 import io.soabase.maple.api.Names;
 import io.soabase.maple.api.NamesValues;
 import io.soabase.maple.api.Statement;
@@ -128,6 +129,40 @@ class TestGeneration {
                 .map(nameValue -> nameValue.name() + "=" + nameValue.value())
                 .collect(Collectors.joining("|"));
         assertThat(result).isEqualTo("name=n|qty=10");
+    }
+
+    @Test
+    void testCaching() {
+        Names names = buildNames(BasicSchema.class);
+        MetaInstance<BasicSchema> metaInstance1 = generate(names, BasicSchema.class);
+        MetaInstance<BasicSchema> metaInstance2 = generate(names, BasicSchema.class);
+        assertThat(metaInstance1).isSameAs(metaInstance2);
+
+        generator.clearCache();
+
+        MetaInstance<BasicSchema> metaInstance3 = generate(names, BasicSchema.class);
+        assertThat(metaInstance3).isNotSameAs(metaInstance1);
+        assertThat(metaInstance3).isNotSameAs(metaInstance2);
+    }
+
+    @Test
+    void testCachingWithFormatters() {
+        Names names = buildNames(BasicSchema.class);
+
+        MapleFormatter altFormatter = (logger, namesValues, mainMessage, t) -> {};
+
+        MetaInstance<BasicSchema> metaInstance1 = generator.generate(names, BasicSchema.class, ClassLoader.getSystemClassLoader(), formatter);
+        MetaInstance<BasicSchema> metaInstance2 = generator.generate(names, BasicSchema.class, ClassLoader.getSystemClassLoader(), altFormatter);
+        assertThat(metaInstance1).isNotSameAs(metaInstance2);
+        assertThat(metaInstance1.newSchemaInstance().getClass()).isSameAs(metaInstance2.newSchemaInstance().getClass());
+
+        generator.clearCache();
+
+        MetaInstance<BasicSchema> metaInstance3 = generator.generate(names, BasicSchema.class, ClassLoader.getSystemClassLoader(), formatter);
+        assertThat(metaInstance3).isNotSameAs(metaInstance1);
+        assertThat(metaInstance3).isNotSameAs(metaInstance2);
+        assertThat(metaInstance3.newSchemaInstance().getClass()).isNotSameAs(metaInstance1.newSchemaInstance().getClass());
+        assertThat(metaInstance3.newSchemaInstance().getClass()).isNotSameAs(metaInstance2.newSchemaInstance().getClass());
     }
 
     private <T> MetaInstance<T> generate(Names names, Class<T> clazz) {
