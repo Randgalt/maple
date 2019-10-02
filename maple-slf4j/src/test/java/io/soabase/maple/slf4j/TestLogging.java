@@ -17,6 +17,7 @@ package io.soabase.maple.slf4j;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
 import org.slf4j.event.Level;
 import org.slf4j.event.SubstituteLoggingEvent;
 import org.slf4j.impl.StaticLoggerBinder;
@@ -27,6 +28,7 @@ class TestLogging {
     @AfterEach
     void cleanUp() {
         StaticLoggerBinder.getEventQueue().clear();
+        MDC.clear();
     }
 
     @Test
@@ -42,5 +44,16 @@ class TestLogging {
         event = StaticLoggerBinder.getEventQueue().remove();
         assertThat(event.getLevel()).isEqualTo(Level.ERROR);
         assertThat(event.getMessage()).isEqualTo("this is a test");
+    }
+
+    @Test
+    void testMdc() {
+        MapleLogger<Schema> logger = MapleFactory.getLogger(getClass(), Schema.class);
+        MapleLogger.MdcCloseable closeable = logger.mdc(s -> s.name("me").age(24));
+        assertThat(MDC.get("name")).isEqualTo("me");
+        assertThat(MDC.get("age")).isEqualTo("24");
+        closeable.close();
+        assertThat(MDC.get("name")).isNull();
+        assertThat(MDC.get("age")).isNull();
     }
 }

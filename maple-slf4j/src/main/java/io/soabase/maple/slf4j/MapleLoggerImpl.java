@@ -15,12 +15,22 @@
  */
 package io.soabase.maple.slf4j;
 
+import io.soabase.maple.api.NamesValues;
+import io.soabase.maple.api.Statement;
 import io.soabase.maple.core.StandardMapleLogger;
 import io.soabase.maple.spi.MetaInstance;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 class MapleLoggerImpl<T> extends StandardMapleLogger<T, Logger> implements MapleLogger<T> {
     MapleLoggerImpl(MetaInstance<T> metaInstance, Logger logger) {
         super(metaInstance, logger, Utils::isEnabled, Utils::levelLogger);
+    }
+
+    @Override
+    public MdcCloseable mdc(Statement<T> statement) {
+        NamesValues namesValues = statement.toNamesValues(getMetaInstance());
+        namesValues.stream().forEach(nameValue -> MDC.put(nameValue.name(), String.valueOf(nameValue.value())));
+        return () -> namesValues.stream().forEach(nameValue -> MDC.remove(nameValue.name()));
     }
 }

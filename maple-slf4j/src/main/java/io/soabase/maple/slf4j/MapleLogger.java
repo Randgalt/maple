@@ -16,6 +16,7 @@
 package io.soabase.maple.slf4j;
 
 import io.soabase.maple.api.MapleLoggerApi;
+import io.soabase.maple.api.Statement;
 import org.slf4j.Logger;
 
 public interface MapleLogger<T> extends MapleLoggerApi<T> {
@@ -25,4 +26,16 @@ public interface MapleLogger<T> extends MapleLoggerApi<T> {
      * @return SLF4J logger
      */
     Logger logger();
+
+    interface MdcCloseable extends AutoCloseable {
+        void close();
+    }
+
+    /**
+     * Pass the generated name/values to the SLF4J's {@link org.slf4j.MDC#put(String, String)}
+     *
+     * @param statement structured logging statement
+     * @return a closeable - when closed the schema names are removed from MDC
+     */
+    MdcCloseable mdc(Statement<T> statement);
 }
