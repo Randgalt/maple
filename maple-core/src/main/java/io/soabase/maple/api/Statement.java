@@ -31,12 +31,12 @@ public interface Statement<T> {
      *
      * <pre>
      * // partialLog is "pre filled" with fields/values
-     * Statement<LoggingSchema> partialLog = s -> s.event(UPDATE).customerId(customerId);
+     * Statement&lt;LoggingSchema&gt; partialLog = s -&gt; s.event(UPDATE).customerId(customerId);
      *
      * ... later ...
      *
      * // partialLog is used along with the additional field "eventDetail"
-     * logger.info(partialLog.concat(s -> s.eventDetail("success"));
+     * logger.info(partialLog.concat(s -&gt; s.eventDetail("success"));
      * </pre>
      *
      * @param partialStatement - statement to concat

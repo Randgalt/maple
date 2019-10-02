@@ -40,11 +40,13 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 public class Generator {
-    private final Map<Key, GeneratedMetaInstance> generated = new ConcurrentHashMap<>();
+    private final Map<Key, GeneratedMetaInstance> metaInstanceCache = new ConcurrentHashMap<>();
+    private final Map<Class, Generated> generatedCache = new ConcurrentHashMap<>();
     private static final Set<String> reservedMethodNames = Collections.unmodifiableSet(
             Stream.of(Instance.class.getMethods()).map(Method::getName).collect(Collectors.toSet())
     );
     private static final Method setValueAtIndexMethod;
+
     static {
         try {
             setValueAtIndexMethod = Instance.class.getMethod("internalSetValueAtIndex", Integer.TYPE, Object.class);
@@ -58,16 +60,30 @@ public class Generator {
     }
 
     public void clearCache() {
-        generated.clear();
+        metaInstanceCache.clear();
+        generatedCache.clear();
+    }
+
+    private static class Generated<T> {
+        final Class generatedClass;
+        final InstanceFactory<T> instanceFactory;
+
+        Generated(Class generatedClass, InstanceFactory<T> instanceFactory) {
+            this.generatedClass = generatedClass;
+            this.instanceFactory = instanceFactory;
+        }
     }
 
     @SuppressWarnings("unchecked")
     public <T> GeneratedMetaInstance<T> generate(Names names, Class<T> schemaClass, ClassLoader classLoader, MapleFormatter formatter) {
-        return generated.computeIfAbsent(new Key(schemaClass, formatter), __ -> {
-            ByteBuddy byteBuddy = new ByteBuddy();
-            Class generatedClass = internalGenerate(byteBuddy, schemaClass, classLoader, toSet(names));
-            InstanceFactory<T> instanceFactory = generateInstanceFactory(byteBuddy, generatedClass);
-            return new GeneratedMetaInstance<>(generatedClass, instanceFactory, names, formatter);
+        return metaInstanceCache.computeIfAbsent(new Key(schemaClass, formatter), __ -> {
+            Generated<T> generated = generatedCache.computeIfAbsent(schemaClass, ___ -> {
+                ByteBuddy byteBuddy = new ByteBuddy();
+                Class generatedClass = internalGenerate(byteBuddy, schemaClass, classLoader, toSet(names));
+                InstanceFactory<T> instanceFactory = generateInstanceFactory(byteBuddy, generatedClass);
+                return new Generated(generatedClass, instanceFactory);
+            });
+            return new GeneratedMetaInstance<>(generated.generatedClass, generated.instanceFactory, names, formatter);
         });
     }
 
