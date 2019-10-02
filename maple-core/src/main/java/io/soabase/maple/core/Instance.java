@@ -23,8 +23,4 @@ public class Instance {
     public void internalSetValueAtIndex(int index, Object value) {
         arguments[index] = value;
     }
-
-    public void internalFormattedAtIndex(int index, String format, Object[] args) {
-        internalSetValueAtIndex(index, String.format(format, args));
-    }
 }
