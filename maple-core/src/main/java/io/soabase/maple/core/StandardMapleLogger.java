@@ -50,4 +50,8 @@ public class StandardMapleLogger<T, LOGGER> implements MapleLoggerBase<T> {
             MapleSpi.instance().consume(levelLoggerProc.apply(loggingLevel, logger), mainMessage, t, statement, metaInstance);
         }
     }
+
+    public MetaInstance<T> getMetaInstance() {
+        return metaInstance;
+    }
 }
