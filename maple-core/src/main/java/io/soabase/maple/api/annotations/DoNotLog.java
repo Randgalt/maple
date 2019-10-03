@@ -26,9 +26,7 @@ import java.lang.annotation.Target;
 /**
  * Can be used with {@link io.soabase.maple.api.MapleFormatter}s that use Jackson
  * (e.g. {@link io.soabase.maple.formatters.ModelFormatter}. Fields annotated with this
- * will not get logged. For example, mark password fields or any other security sensitive fields. If you use this
- * annotation, you must pass an {@link com.fasterxml.jackson.databind.ObjectMapper} registered via
- * {@link io.soabase.maple.formatters.DoNotLogAnnotationIntrospector#register(com.fasterxml.jackson.databind.ObjectMapper)}.
+ * will not get logged. For example, mark password fields or any other security sensitive fields.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})

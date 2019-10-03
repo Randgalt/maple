@@ -17,7 +17,6 @@ package io.soabase.maple;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.soabase.maple.api.LoggingLevel;
-import io.soabase.maple.formatters.DoNotLogAnnotationIntrospector;
 import io.soabase.maple.formatters.ModelFormatter;
 import io.soabase.maple.formatters.StandardFormatter;
 import io.soabase.maple.schema.Schema;

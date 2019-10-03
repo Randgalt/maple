@@ -17,7 +17,6 @@ package com.myco.app.logging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.soabase.maple.api.MapleFormatter;
-import io.soabase.maple.formatters.DoNotLogAnnotationIntrospector;
 import io.soabase.maple.formatters.ModelFormatter;
 import io.soabase.maple.slf4j.MapleFactory;
 import io.soabase.maple.slf4j.MapleLogger;
@@ -35,9 +34,6 @@ public class Logging {
 
         // typically, you'll have an internal library that generates an ObjectMapper - ideally, you'd use an instance from that
         ObjectMapper mapper = new ObjectMapper();
-
-        // make the @DoNotLog annotation available for your models
-        DoNotLogAnnotationIntrospector.register(mapper);
 
         // use the ModelFormatter instead of the default StandardFormatter
         MapleFormatter loggingFormatter = new ModelFormatter(ModelFormatter.NodeMapper.forMapper(mapper),
