@@ -122,7 +122,6 @@ class TestFormatters {
     @Test
     void testModelFormatter() {
         ObjectMapper mapper = new ObjectMapper();
-        DoNotLogAnnotationIntrospector.register(mapper);
         MapleSpi.instance().setFormatter(new ModelFormatter(forMapper(mapper), SNAKE_CASE, QUOTE_VALUES_IF_NEEDED, ESCAPE_VALUES));
 
         Address address = new Address("123 Main St", "Newtown", "New Fornia", "12225", "do not show");

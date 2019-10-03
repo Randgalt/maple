@@ -15,7 +15,8 @@
  */
 package io.soabase.maple.api.annotations;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotation;
+import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -31,6 +32,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
-@JacksonAnnotation
+@JacksonAnnotationsInside
+@JsonIgnore
 public @interface DoNotLog {
 }
