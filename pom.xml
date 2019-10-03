@@ -195,7 +195,7 @@
                         <header>src/etc/header.txt</header>
                         <excludes>
                             <exclude>**/.gitignore</exclude>
-                            <exclude>**/.yml</exclude>
+                            <exclude>**/.travis.yml</exclude>
                             <exclude>**/*.json</exclude>
                             <exclude>**/*.md</exclude>
                             <exclude>**/.idea/**</exclude>
