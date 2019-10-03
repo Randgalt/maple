@@ -164,8 +164,7 @@ _ModelFormatter_
 
 The ModelFormatter extends _StandardFormatter_ to format all schema arguments as flattened model values. All arguments are passed to a provided Jackson ObjectMapper to serialize to a tree. The tree 
 components are flattened into schema values. With this formatter you can use an annotation to keep secret information from being logged.
-Annotate any field (or corresponding getter) with `@DoNotLog` and then add `DoNotLogAnnotationIntrospector` to the `ObjectMapper` used for the formatter.
-See the [DoNotLog](#donotlog) section for details.
+Annotate any field (or corresponding getter) with `@DoNotLog`. See the [DoNotLog](#donotlog) section for details.
 
 ## Additional Features
 
@@ -223,18 +222,7 @@ log.info("message", partial.concat(s -> s.code(c).name(n))); // request ID is al
 
 A Jackson annotation is provided to denote values that you do not want to be logged, `@DoNotLog`. If you use the 
 `ModelFormatter` [Logging Formatters](#logging-formatters) (or your own Logging Formatter 
-that works with Jackson) use this annotation to mark fields that should not be logged. `DoNotLogAnnotationIntrospector` must 
-also be registered with the Jackson mapper. E.g.
-
-Register the annotation with Jackson:
-
-```
-ObjectMapper mapper = ...
-
-DoNotLogAnnotationIntrospector.register(mapper);
-
-// this mapper would be used with ModelFormatter or your custom formatter
-```
+that works with Jackson) use this annotation to mark fields that should not be logged.
 
 Annotate your models
 
