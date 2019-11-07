@@ -11,3 +11,4 @@ See:
 - [RequestHandler.java](src/main/java/com/myco/app/request/RequestHandler.java) - structured logging example
 - [UpdateService.java](src/main/java/com/myco/app/request/UpdateService.java) - structured logging example with composed logging. Also 
 has an example of using [@DoNotLog](src/main/java/com/myco/app/request/PayloadModel.java) to prevent sensitive data from being logged.
+- [RestEndpoint.java](src/main/java/com/myco/app/mdc/RestEndpoint.java) - example of using structured MDC 

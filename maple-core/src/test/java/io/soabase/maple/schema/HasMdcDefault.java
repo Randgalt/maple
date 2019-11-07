@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.maple.slf4j;
+package io.soabase.maple.schema;
 
-import io.soabase.maple.core.StandardMapleLogger;
-import io.soabase.maple.spi.MetaInstance;
-import org.slf4j.Logger;
+import io.soabase.maple.api.annotations.MdcDefaultValue;
 
-class MapleLoggerImpl<T> extends StandardMapleLogger<T, Logger> implements MapleLogger<T> {
-    MapleLoggerImpl(MetaInstance<T> metaInstance, Logger logger) {
-        super(metaInstance, logger, Utils::isEnabled, Utils::levelLogger);
-    }
+public interface HasMdcDefault {
+    @MdcDefaultValue
+    HasMdcDefault mdcValue(int i);
+
+    HasMdcDefault name(String name);
 }

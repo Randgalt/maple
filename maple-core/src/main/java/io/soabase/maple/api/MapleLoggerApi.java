@@ -215,4 +215,12 @@ public interface MapleLoggerApi<T> {
      * @param statement structured logging statement
      */
     void error(String mainMessage, Throwable t, Statement<T> statement);
+
+    /**
+     * Pass the generated name/values to the logger's MDC system
+     *
+     * @param statement structured logging statement
+     * @return a closeable - when closed the schema names are removed from MDC
+     */
+    MdcCloseable mdc(Statement<T> statement);
 }

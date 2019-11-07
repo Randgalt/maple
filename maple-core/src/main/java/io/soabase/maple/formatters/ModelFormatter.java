@@ -18,10 +18,7 @@ package io.soabase.maple.formatters;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.*;
-import io.soabase.maple.api.LevelLogger;
-import io.soabase.maple.api.MapleFormatter;
-import io.soabase.maple.api.NameValue;
-import io.soabase.maple.api.NamesValues;
+import io.soabase.maple.api.*;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -138,8 +135,8 @@ public class ModelFormatter implements MapleFormatter {
             }
 
             @Override
-            public boolean nthIsRequired(int n) {
-                return false;
+            public Set<Specialization> nthSpecializations(int n) {
+                return Collections.emptySet();
             }
 
             @Override

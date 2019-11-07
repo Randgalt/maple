@@ -15,9 +15,7 @@
  */
 package io.soabase.maple.core;
 
-import io.soabase.maple.api.LevelLogger;
-import io.soabase.maple.api.LoggingLevel;
-import io.soabase.maple.api.Statement;
+import io.soabase.maple.api.*;
 import io.soabase.maple.spi.MapleSpi;
 import io.soabase.maple.spi.MetaInstance;
 
@@ -49,6 +47,13 @@ public class StandardMapleLogger<T, LOGGER> implements MapleLoggerBase<T> {
         if (isEnabledProc.test(loggingLevel, logger)) {
             MapleSpi.instance().consume(levelLoggerProc.apply(loggingLevel, logger), mainMessage, t, statement, metaInstance);
         }
+    }
+
+    @Override
+    public MdcCloseable mdc(Statement<T> statement) {
+        NamesValues namesValues = statement.toNamesValues(getMetaInstance());
+        namesValues.stream().forEach(nameValue -> MapleSpi.instance().putMdcValue(nameValue.name(), String.valueOf(nameValue.value())));
+        return () -> namesValues.stream().forEach(nameValue -> MapleSpi.instance().removeMdcValue(nameValue.name()));
     }
 
     public MetaInstance<T> getMetaInstance() {

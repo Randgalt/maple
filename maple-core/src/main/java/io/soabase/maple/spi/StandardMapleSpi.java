@@ -18,8 +18,9 @@ package io.soabase.maple.spi;
 import io.soabase.maple.api.*;
 import io.soabase.maple.api.exceptions.MissingSchemaValueException;
 import io.soabase.maple.core.Generator;
+import io.soabase.maple.core.SpecializedNamesValues;
 
-@SuppressWarnings("PMD.CollapsibleIfStatements")
+@SuppressWarnings({"PMD.CollapsibleIfStatements", "PMD.UselessParentheses"})
 public class StandardMapleSpi implements MapleSpi {
     private final Generator generator = new Generator();
     private volatile boolean productionMode = false;
@@ -33,8 +34,7 @@ public class StandardMapleSpi implements MapleSpi {
 
     @Override
     public <T> void consume(LevelLogger levelLogger, String mainMessage, Throwable t, Statement<T> statement, MetaInstance<T> metaInstance) {
-        NamesValues namesValues = statement.toNamesValues(metaInstance);
-        validateRequired(namesValues);
+        NamesValues namesValues = applySpecializations(statement.toNamesValues(metaInstance));
         metaInstance.formatter().apply(levelLogger, namesValues, mainMessage, t);
     }
 
@@ -59,15 +59,25 @@ public class StandardMapleSpi implements MapleSpi {
     }
 
     @Override
-    public void validateRequired(NamesValues namesValues) {
-        if (!getProductionMode()) {
-            for (int i = 0; i < namesValues.qty(); ++i) {
-                if (namesValues.nthIsRequired(i)) {
-                    if (namesValues.nthValue(i) == null) {
-                        throw new MissingSchemaValueException("Entire schema must be specified. Missing: " + namesValues.nthName(i));
-                    }
+    public NamesValues applySpecializations(NamesValues namesValues) {
+        NamesValues specializedNamesValues = null;
+        for (int i = 0; i < namesValues.qty(); ++i) {
+            if (!productionMode && namesValues.nthSpecializations(i).contains(Specialization.REQUIRED)) {
+                if (namesValues.nthValue(i) == null) {
+                    throw new MissingSchemaValueException("Entire schema must be specified. Missing: " + namesValues.nthName(i));
                 }
+            } else if ((specializedNamesValues == null) && namesValues.nthSpecializations(i).contains(Specialization.DEFAULT_FROM_MDC)) {
+                specializedNamesValues = new SpecializedNamesValues(namesValues, index -> getSpecializedValue(namesValues, index));
             }
         }
+        return (specializedNamesValues != null) ? specializedNamesValues : namesValues;
+    }
+
+    private Object getSpecializedValue(NamesValues namesValues, int index) {
+        Object value = namesValues.nthValue(index);
+        if ((value == null) && namesValues.nthSpecializations(index).contains(Specialization.DEFAULT_FROM_MDC)) {
+            return getMdcValue(namesValues.nthName(index));
+        }
+        return value;
     }
 }

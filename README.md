@@ -250,6 +250,43 @@ public interface Logging {
 
 ```
 
+### MDC
+
+You can set [MDC](http://www.slf4j.org/api/org/slf4j/MDC.html) values using structured schema. E.g.
+
+```
+...
+MapleLogger<Schema> log = ...
+
+...
+
+try (log.mdc(s -> s.transactionId(id).code(c))) {
+    // do work - MDC values are removed afterwards
+}
+```
+
+_Using MDC as default values_
+
+You can annotate schema methods with `@MdcDefaultValue`. For these methods if you do not specify
+a value directly, Maple will look in the MDC for the value. E.g.
+
+```
+public interface Schema {
+    ...
+    Schema name(String name);
+
+    @MdcDefaultValue
+    Schema transactionId(String id);
+    ...
+}
+
+try (log.mdc(s -> s.transactionId(id))) {
+    
+    log.info(s -> s.name(n));   // transactionId is also logged here
+}
+
+``` 
+
 ### Unstructured Logging, Exceptions
 
 You can include an unstructured message as well as any exceptions in your log statements. E.g.

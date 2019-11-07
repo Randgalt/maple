@@ -37,9 +37,21 @@ public interface MapleSpi {
 
     MapleFormatter getFormatter();
 
-    void validateRequired(NamesValues namesValues);
+    NamesValues applySpecializations(NamesValues namesValues);
 
     default void reset() {
         setFormatter(null);
+    }
+
+    default Object getMdcValue(String name) {
+        return null;
+    }
+
+    default void putMdcValue(String name, Object value) {
+        // NOP
+    }
+
+    default void removeMdcValue(String name) {
+        // NOP
     }
 }
