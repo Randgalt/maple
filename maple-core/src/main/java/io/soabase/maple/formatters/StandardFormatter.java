@@ -85,13 +85,15 @@ public class StandardFormatter implements MapleFormatter {
             }
         }
 
-        for (int i = 0; i < namesValues.qty(); ++i, needsSpace = true) {
+        for (int i = 0; i < namesValues.qty(); ++i) {
             Object value = namesValues.nthValue(i);
             if (skipNullValues && (value == null)) {
                 continue;
             }
             if (needsSpace) {
                 logMessage.append(SPACE);
+            } else {
+                needsSpace = true;
             }
             formatSchemaName(logMessage, namesValues.nthName(i));
             logMessage.append('=');

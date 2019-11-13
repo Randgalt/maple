@@ -46,6 +46,11 @@ public class SpecializedNamesValues implements NamesValues {
     }
 
     @Override
+    public String nthRawName(int n) {
+        return names.nthRawName(n);
+    }
+
+    @Override
     public Object nthValue(int n) {
         return valueProc.apply(n);
     }

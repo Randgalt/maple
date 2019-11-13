@@ -135,6 +135,11 @@ public class ModelFormatter implements MapleFormatter {
             }
 
             @Override
+            public String nthRawName(int n) {
+                return nthName(n);
+            }
+
+            @Override
             public Set<Specialization> nthSpecializations(int n) {
                 return Collections.emptySet();
             }

@@ -34,11 +34,13 @@ public class StandardNamesBuilder {
 
         class Entry implements Comparable<Entry> {
             private final String name;
+            private final String rawName;
             private final Set<Specialization> specializations;
             private final int sortValue;
 
-            private Entry(String name, Set<Specialization> specializations, int sortValue) {
+            private Entry(String name, String rawName, Set<Specialization> specializations, int sortValue) {
                 this.name = name;
+                this.rawName = rawName;
                 this.specializations = Collections.unmodifiableSet(specializations);
                 this.sortValue = sortValue;
             }
@@ -54,13 +56,9 @@ public class StandardNamesBuilder {
         }
 
         List<Entry> entries = new ArrayList<>();
-        Set<String> usedMethods = new HashSet<>();
         for (Method method : schemaClass.getMethods()) {
             if (method.isBridge() || method.isSynthetic() || method.isDefault() || Modifier.isStatic(method.getModifiers())) {
                 continue;
-            }
-            if (isUsedMethod(usedMethods, method)) {
-                throw new InvalidSchemaException("Schema method names must be unique. Duplicate: " + method.getName());
             }
             if (!method.getReturnType().isAssignableFrom(schemaClass)) {
                 throw new InvalidSchemaException("Schema methods must return " + schemaClass.getSimpleName() +
@@ -83,13 +81,18 @@ public class StandardNamesBuilder {
 
             SortOrder sortOrder = method.getAnnotation(SortOrder.class);
             int sortOrderValue = (sortOrder != null) ? sortOrder.value() : Short.MAX_VALUE;
-            entries.add(new Entry(method.getName(), specializations, sortOrderValue));
+            entries.add(new Entry(method.getName(), method.toString(), specializations, sortOrderValue));
         }
         Collections.sort(entries);
         return new Names() {
             @Override
             public String nthName(int n) {
                 return entries.get(n).name;
+            }
+
+            @Override
+            public String nthRawName(int n) {
+                return entries.get(n).rawName;
             }
 
             @Override
@@ -102,13 +105,6 @@ public class StandardNamesBuilder {
                 return entries.get(n).specializations;
             }
         };
-    }
-
-    private static boolean isUsedMethod(Set<String> usedMethods, Method method) {
-        if (method.getParameterCount() == 1) {
-            return !usedMethods.add(method.getName());
-        }
-        return false;
     }
 
     private StandardNamesBuilder() {

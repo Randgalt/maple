@@ -57,7 +57,6 @@ class TestGeneration {
     @Test
     void testInvalidSchema() {
         Stream.of(BadReturnType.class,
-                Duplicates.class,
                 InvalidMethod.class,
                 CannotBeAClass.class,
                 MustTake1ArgumentB.class,
@@ -108,6 +107,15 @@ class TestGeneration {
     void testMdcDefaultValue() {
         Names names = buildNames(HasMdcDefault.class);
         assertThat(names.nthSpecializations(0).contains(Specialization.DEFAULT_FROM_MDC)).isTrue();
+    }
+
+    @Test
+    void testDuplicates() {
+        Names names = buildNames(Duplicates.class);
+        assertThat(names.qty()).isEqualTo(2);
+        assertThat(names.nthName(0)).isEqualTo("id");
+        assertThat(names.nthName(1)).isEqualTo("id");
+        assertThat(names.nthRawName(0)).isNotEqualTo(names.nthRawName(1));
     }
 
     @Test

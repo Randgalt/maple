@@ -17,6 +17,7 @@ package io.soabase.maple.core;
 
 import io.soabase.maple.api.MapleFormatter;
 import io.soabase.maple.api.Names;
+import io.soabase.maple.api.exceptions.InvalidSchemaException;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.implementation.FixedValue;
@@ -26,10 +27,7 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -79,7 +77,7 @@ public class Generator {
         return metaInstanceCache.computeIfAbsent(new Key(schemaClass, formatter), __ -> {
             Generated<T> generated = generatedCache.computeIfAbsent(schemaClass, ___ -> {
                 ByteBuddy byteBuddy = new ByteBuddy();
-                Class generatedClass = internalGenerate(byteBuddy, schemaClass, classLoader, toSet(names));
+                Class generatedClass = internalGenerate(byteBuddy, schemaClass, classLoader, toMap(names));
                 InstanceFactory<T> instanceFactory = generateInstanceFactory(byteBuddy, generatedClass);
                 return new Generated(generatedClass, instanceFactory);
             });
@@ -87,19 +85,22 @@ public class Generator {
         });
     }
 
-    private List<String> toSet(Names names) {
+    private Map<String, Integer> toMap(Names names) {
         return IntStream.range(0, names.qty())
-                .mapToObj(names::nthName)
-                .collect(Collectors.toList());
+                .mapToObj(i -> new AbstractMap.SimpleEntry<>(names.nthRawName(i), i))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private Class internalGenerate(ByteBuddy byteBuddy, Class schemaClass, ClassLoader classLoader, List<String> names) {
+    private Class internalGenerate(ByteBuddy byteBuddy, Class schemaClass, ClassLoader classLoader, Map<String, Integer> names) {
         DynamicType.Builder builder = byteBuddy.subclass(Instance.class).implement(schemaClass);
         for (Method method : schemaClass.getMethods()) {
             if (method.isBridge() || method.isSynthetic() || method.isDefault() || Modifier.isStatic(method.getModifiers())) {
                 continue;
             }
-            int thisIndex = names.indexOf(method.getName());
+            int thisIndex = names.getOrDefault(method.toString(), -1);
+            if (thisIndex < 0 ) {
+                throw new InvalidSchemaException(String.format("Could not find method %s in generated Names", method.toString()));
+            }
             Implementation methodCall = invoke(setValueAtIndexMethod)
                     .with(thisIndex)
                     .withArgument(0)
