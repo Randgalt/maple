@@ -5,7 +5,7 @@
     <groupId>io.soabase.maple</groupId>
     <artifactId>maple-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <modules>
         <module>maple-core</module>
         <module>maple-slf4j</module>
@@ -75,7 +75,7 @@
         <url>https://github.com/Randgalt/maple</url>
         <connection>scm:git:https://github.com/Randgalt/maple.git</connection>
         <developerConnection>scm:git:git@github.com:Randgalt/maple.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>maple-1.2</tag>
     </scm>
 
     <issueManagement>
