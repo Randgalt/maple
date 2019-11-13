@@ -15,18 +15,12 @@
  */
 package io.soabase.maple;
 
-import io.soabase.maple.api.MapleFormatter;
-import io.soabase.maple.api.Names;
-import io.soabase.maple.api.NamesValues;
-import io.soabase.maple.api.Statement;
+import io.soabase.maple.api.*;
 import io.soabase.maple.api.exceptions.InvalidSchemaException;
 import io.soabase.maple.api.exceptions.MissingSchemaValueException;
 import io.soabase.maple.core.Generator;
 import io.soabase.maple.formatters.StandardFormatter;
-import io.soabase.maple.schema.BasicSchema;
-import io.soabase.maple.schema.HasRequired;
-import io.soabase.maple.schema.HasSortOrder;
-import io.soabase.maple.schema.MultiMethodDefaults;
+import io.soabase.maple.schema.*;
 import io.soabase.maple.schema.invalid.*;
 import io.soabase.maple.spi.MapleSpi;
 import io.soabase.maple.spi.MetaInstance;
@@ -94,7 +88,7 @@ class TestGeneration {
     @Test
     void testRequired() {
         Names names = buildNames(HasRequired.class);
-        assertThat(names.nthIsRequired(1)).isTrue();
+        assertThat(names.nthSpecializations(1).contains(Specialization.REQUIRED)).isTrue();
 
         MetaInstance<HasRequired> metaInstance = generate(names, HasRequired.class);
         HasRequired instance = metaInstance.newSchemaInstance();
@@ -104,10 +98,16 @@ class TestGeneration {
         try {
             MapleSpi.instance().setProductionMode(false);
             NamesValues namesValues = metaInstance.toNamesValues(instance);
-            assertThatThrownBy(() -> MapleSpi.instance().validateRequired(namesValues)).isInstanceOf(MissingSchemaValueException.class);
+            assertThatThrownBy(() -> MapleSpi.instance().applySpecializations(namesValues)).isInstanceOf(MissingSchemaValueException.class);
         } catch (Exception e) {
             MapleSpi.instance().setProductionMode(saveProductionMode);
         }
+    }
+
+    @Test
+    void testMdcDefaultValue() {
+        Names names = buildNames(HasMdcDefault.class);
+        assertThat(names.nthSpecializations(0).contains(Specialization.DEFAULT_FROM_MDC)).isTrue();
     }
 
     @Test

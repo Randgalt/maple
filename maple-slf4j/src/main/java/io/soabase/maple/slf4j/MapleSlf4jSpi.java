@@ -15,12 +15,22 @@
  */
 package io.soabase.maple.slf4j;
 
-import io.soabase.maple.core.StandardMapleLogger;
-import io.soabase.maple.spi.MetaInstance;
-import org.slf4j.Logger;
+import io.soabase.maple.spi.StandardMapleSpi;
+import org.slf4j.MDC;
 
-class MapleLoggerImpl<T> extends StandardMapleLogger<T, Logger> implements MapleLogger<T> {
-    MapleLoggerImpl(MetaInstance<T> metaInstance, Logger logger) {
-        super(metaInstance, logger, Utils::isEnabled, Utils::levelLogger);
+public class MapleSlf4jSpi extends StandardMapleSpi {
+    @Override
+    public Object getMdcValue(String name) {
+        return MDC.get(name);
+    }
+
+    @Override
+    public void putMdcValue(String name, Object value) {
+        MDC.put(name, String.valueOf(value));
+    }
+
+    @Override
+    public void removeMdcValue(String name) {
+        MDC.remove(name);
     }
 }

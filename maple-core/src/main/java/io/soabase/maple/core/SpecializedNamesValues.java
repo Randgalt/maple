@@ -20,20 +20,19 @@ import io.soabase.maple.api.Names;
 import io.soabase.maple.api.NamesValues;
 import io.soabase.maple.api.Specialization;
 
-import java.util.Iterator;
 import java.util.Set;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
-class NamesValuesImp implements NamesValues {
+import static io.soabase.maple.core.NamesValuesImp.newStream;
+
+public class SpecializedNamesValues implements NamesValues {
     private final Names names;
-    private final Object[] arguments;
+    private final IntFunction<Object> valueProc;
 
-    NamesValuesImp(Names names, Object[] arguments) {
+    public SpecializedNamesValues(Names names, IntFunction<Object> valueProc) {
         this.names = names;
-        this.arguments = arguments;
+        this.valueProc = valueProc;
     }
 
     @Override
@@ -48,7 +47,7 @@ class NamesValuesImp implements NamesValues {
 
     @Override
     public Object nthValue(int n) {
-        return arguments[n];
+        return valueProc.apply(n);
     }
 
     @Override
@@ -59,33 +58,5 @@ class NamesValuesImp implements NamesValues {
     @Override
     public Stream<NameValue> stream() {
         return newStream(this);
-    }
-
-    static Stream<NameValue> newStream(NamesValues namesValues) {
-        Iterator<NameValue> iterator = new Iterator<NameValue>() {
-            private int index = -1;
-
-            @Override
-            public boolean hasNext() {
-                return (index + 1) < namesValues.qty();
-            }
-
-            @Override
-            public NameValue next() {
-                int thisIndex = ++index;
-                return new NameValue() {
-                    @Override
-                    public String name() {
-                        return namesValues.nthName(thisIndex);
-                    }
-
-                    @Override
-                    public Object value() {
-                        return namesValues.nthValue(thisIndex);
-                    }
-                };
-            }
-        };
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false);
     }
 }

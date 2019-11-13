@@ -15,12 +15,13 @@
  */
 package io.soabase.maple.slf4j;
 
-import io.soabase.maple.core.StandardMapleLogger;
-import io.soabase.maple.spi.MetaInstance;
-import org.slf4j.Logger;
+import io.soabase.maple.api.annotations.MdcDefaultValue;
 
-class MapleLoggerImpl<T> extends StandardMapleLogger<T, Logger> implements MapleLogger<T> {
-    MapleLoggerImpl(MetaInstance<T> metaInstance, Logger logger) {
-        super(metaInstance, logger, Utils::isEnabled, Utils::levelLogger);
-    }
+public interface SchemaWithMdc {
+    SchemaWithMdc name(String name);
+
+    SchemaWithMdc age(int age);
+
+    @MdcDefaultValue
+    SchemaWithMdc transactionId(String defaultId);
 }

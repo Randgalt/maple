@@ -13,14 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.maple.slf4j;
+package com.myco.app.mdc;
 
-import io.soabase.maple.core.StandardMapleLogger;
-import io.soabase.maple.spi.MetaInstance;
-import org.slf4j.Logger;
+import java.util.UUID;
 
-class MapleLoggerImpl<T> extends StandardMapleLogger<T, Logger> implements MapleLogger<T> {
-    MapleLoggerImpl(MetaInstance<T> metaInstance, Logger logger) {
-        super(metaInstance, logger, Utils::isEnabled, Utils::levelLogger);
+public class Request {
+    private final TransactionMetaData metaData;
+    private final String name;
+    private final UUID id;
+
+    public Request(TransactionMetaData metaData, String name, UUID id) {
+        this.metaData = metaData;
+        this.name = name;
+        this.id = id;
+    }
+
+    public TransactionMetaData getMetaData() {
+        return metaData;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public UUID getId() {
+        return id;
     }
 }

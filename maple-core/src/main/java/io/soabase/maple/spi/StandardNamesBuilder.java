@@ -15,15 +15,16 @@
  */
 package io.soabase.maple.spi;
 
-import io.soabase.maple.api.exceptions.InvalidSchemaException;
 import io.soabase.maple.api.Names;
+import io.soabase.maple.api.Specialization;
+import io.soabase.maple.api.annotations.MdcDefaultValue;
 import io.soabase.maple.api.annotations.Required;
 import io.soabase.maple.api.annotations.SortOrder;
+import io.soabase.maple.api.exceptions.InvalidSchemaException;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class StandardNamesBuilder {
     public static Names build(Class<?> schemaClass, Collection<String> reservedNames) {
@@ -31,10 +32,29 @@ public class StandardNamesBuilder {
             throw new InvalidSchemaException("Schema must be an interface. Schema: " + schemaClass.getName());
         }
 
-        Set<String> requiredNames = new HashSet<>();
-        List<String> schemaNames = new ArrayList<>();
+        class Entry implements Comparable<Entry> {
+            private final String name;
+            private final Set<Specialization> specializations;
+            private final int sortValue;
+
+            private Entry(String name, Set<Specialization> specializations, int sortValue) {
+                this.name = name;
+                this.specializations = Collections.unmodifiableSet(specializations);
+                this.sortValue = sortValue;
+            }
+
+            @Override
+            public int compareTo(Entry o) {
+                int diff = sortValue - o.sortValue;
+                if (diff == 0) {
+                    diff = name.compareTo(o.name);
+                }
+                return diff;
+            }
+        }
+
+        List<Entry> entries = new ArrayList<>();
         Set<String> usedMethods = new HashSet<>();
-        Map<String, Integer> schemaNameToSortOrder = new HashMap<>();
         for (Method method : schemaClass.getMethods()) {
             if (method.isBridge() || method.isSynthetic() || method.isDefault() || Modifier.isStatic(method.getModifiers())) {
                 continue;
@@ -52,31 +72,34 @@ public class StandardNamesBuilder {
             if (reservedNames.contains(method.getName())) {
                 throw new InvalidSchemaException("Schema method name is reserved for internal use. Name: " + method.getName());
             }
+
+            Set<Specialization> specializations = new HashSet<>();
             if (method.getAnnotation(Required.class) != null) {
-                requiredNames.add(method.getName());
+                specializations.add(Specialization.REQUIRED);
             }
-            schemaNames.add(method.getName());
+            if (method.getAnnotation(MdcDefaultValue.class) != null) {
+                specializations.add(Specialization.DEFAULT_FROM_MDC);
+            }
 
             SortOrder sortOrder = method.getAnnotation(SortOrder.class);
             int sortOrderValue = (sortOrder != null) ? sortOrder.value() : Short.MAX_VALUE;
-            schemaNameToSortOrder.put(method.getName(), sortOrderValue);
+            entries.add(new Entry(method.getName(), specializations, sortOrderValue));
         }
-        schemaNames.sort((name1, name2) -> compareSchemaNames(schemaNameToSortOrder, name1, name2));
-        Set<Integer> requireds = requiredNames.stream().map(schemaNames::indexOf).collect(Collectors.toSet());
+        Collections.sort(entries);
         return new Names() {
             @Override
             public String nthName(int n) {
-                return schemaNames.get(n);
+                return entries.get(n).name;
             }
 
             @Override
             public int qty() {
-                return schemaNames.size();
+                return entries.size();
             }
 
             @Override
-            public boolean nthIsRequired(int n) {
-                return requireds.contains(n);
+            public Set<Specialization> nthSpecializations(int n) {
+                return entries.get(n).specializations;
             }
         };
     }
@@ -86,16 +109,6 @@ public class StandardNamesBuilder {
             return !usedMethods.add(method.getName());
         }
         return false;
-    }
-
-    private static int compareSchemaNames(Map<String, Integer> schemaNameToSortOrder, String name1, String name2) {
-        int sortValue1 = schemaNameToSortOrder.get(name1);
-        int sortValue2 = schemaNameToSortOrder.get(name2);
-        int diff = sortValue1 - sortValue2;
-        if (diff == 0) {
-            diff = name1.compareTo(name2);
-        }
-        return diff;
     }
 
     private StandardNamesBuilder() {

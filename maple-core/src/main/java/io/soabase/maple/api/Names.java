@@ -15,10 +15,12 @@
  */
 package io.soabase.maple.api;
 
+import java.util.Set;
+
 public interface Names {
     int qty();
 
     String nthName(int n);
 
-    boolean nthIsRequired(int n);
+    Set<Specialization> nthSpecializations(int n);
 }

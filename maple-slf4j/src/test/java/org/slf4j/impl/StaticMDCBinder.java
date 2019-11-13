@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.maple.slf4j;
+package org.slf4j.impl;
 
-import io.soabase.maple.core.StandardMapleLogger;
-import io.soabase.maple.spi.MetaInstance;
-import org.slf4j.Logger;
+import org.slf4j.helpers.BasicMDCAdapter;
+import org.slf4j.spi.MDCAdapter;
 
-class MapleLoggerImpl<T> extends StandardMapleLogger<T, Logger> implements MapleLogger<T> {
-    MapleLoggerImpl(MetaInstance<T> metaInstance, Logger logger) {
-        super(metaInstance, logger, Utils::isEnabled, Utils::levelLogger);
+public class StaticMDCBinder {
+    public static final StaticMDCBinder SINGLETON = new StaticMDCBinder();
+
+    private StaticMDCBinder() {
+    }
+
+    public MDCAdapter getMDCA() {
+        return new BasicMDCAdapter();
+    }
+
+    public String getMDCAdapterClassStr() {
+        return BasicMDCAdapter.class.getName();
     }
 }

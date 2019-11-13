@@ -15,6 +15,7 @@
  */
 package io.soabase.maple.slf4j;
 
+import io.soabase.maple.api.MdcCloseable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
@@ -49,11 +50,28 @@ class TestLogging {
     @Test
     void testMdc() {
         MapleLogger<Schema> logger = MapleFactory.getLogger(getClass(), Schema.class);
-        MapleLogger.MdcCloseable closeable = logger.mdc(s -> s.name("me").age(24));
+        MdcCloseable closeable = logger.mdc(s -> s.name("me").age(24));
         assertThat(MDC.get("name")).isEqualTo("me");
         assertThat(MDC.get("age")).isEqualTo("24");
         closeable.close();
         assertThat(MDC.get("name")).isNull();
         assertThat(MDC.get("age")).isNull();
+    }
+
+    @Test
+    void testDefaultMdcValue() {
+        MapleLogger<SchemaWithMdc> logger = MapleFactory.getLogger(getClass(), SchemaWithMdc.class);
+        try ( MdcCloseable closeable = logger.mdc(s -> s.transactionId("id")) ) {
+            logger.info(s -> s.name("n").age(1));
+
+            SubstituteLoggingEvent event = StaticLoggerBinder.getEventQueue().remove();
+            assertThat(event.getLevel()).isEqualTo(Level.INFO);
+            assertThat(event.getMessage()).isEqualTo("age=1 name=n transaction_id=id");
+
+            logger.info(s -> s.name("n").age(1).transactionId("other"));
+            event = StaticLoggerBinder.getEventQueue().remove();
+            assertThat(event.getLevel()).isEqualTo(Level.INFO);
+            assertThat(event.getMessage()).isEqualTo("age=1 name=n transaction_id=other");
+        }
     }
 }

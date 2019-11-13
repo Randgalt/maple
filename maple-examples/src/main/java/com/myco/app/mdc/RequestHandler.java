@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.soabase.maple.slf4j;
+package com.myco.app.mdc;
 
-import io.soabase.maple.core.StandardMapleLogger;
-import io.soabase.maple.spi.MetaInstance;
-import org.slf4j.Logger;
+import com.myco.app.logging.Logging;
+import com.myco.app.logging.LoggingEventType;
+import com.myco.app.logging.LoggingSchema;
+import io.soabase.maple.slf4j.MapleLogger;
 
-class MapleLoggerImpl<T> extends StandardMapleLogger<T, Logger> implements MapleLogger<T> {
-    MapleLoggerImpl(MetaInstance<T> metaInstance, Logger logger) {
-        super(metaInstance, logger, Utils::isEnabled, Utils::levelLogger);
+public class RequestHandler {
+    private final MapleLogger<LoggingSchema> log = Logging.get(getClass());
+
+    public void handleRequest(Request request) {
+        // normal logging. The underlying logging framework will add the MDC values
+        log.info(s -> s.event(LoggingEventType.USER_REQUEST).eventDetail(request.getName()).customerId(request.getId()));
+
+        // etc.
     }
 }
