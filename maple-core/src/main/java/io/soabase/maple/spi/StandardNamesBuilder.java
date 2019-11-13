@@ -81,7 +81,7 @@ public class StandardNamesBuilder {
 
             SortOrder sortOrder = method.getAnnotation(SortOrder.class);
             int sortOrderValue = (sortOrder != null) ? sortOrder.value() : Short.MAX_VALUE;
-            entries.add(new Entry(method.getName(), method.toString(), specializations, sortOrderValue));
+            entries.add(new Entry(method.getName(), method.toGenericString(), specializations, sortOrderValue));
         }
         Collections.sort(entries);
         return new Names() {

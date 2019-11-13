@@ -97,9 +97,9 @@ public class Generator {
             if (method.isBridge() || method.isSynthetic() || method.isDefault() || Modifier.isStatic(method.getModifiers())) {
                 continue;
             }
-            int thisIndex = names.getOrDefault(method.toString(), -1);
+            int thisIndex = names.getOrDefault(method.toGenericString(), -1);
             if (thisIndex < 0 ) {
-                throw new InvalidSchemaException(String.format("Could not find method %s in generated Names", method.toString()));
+                throw new InvalidSchemaException(String.format("Could not find method %s in generated Names", method.toGenericString()));
             }
             Implementation methodCall = invoke(setValueAtIndexMethod)
                     .with(thisIndex)
