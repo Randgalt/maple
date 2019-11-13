@@ -106,11 +106,23 @@ class TestLogging {
     @Test
     void testInvalidSchema() {
         Stream.of(BadReturnType.class,
-                Duplicates.class,
                 InvalidMethod.class,
                 CannotBeAClass.class,
                 MustTake1ArgumentB.class,
                 MustReturnRightTypeInheritance.class
         ).forEach(clazz -> assertThatThrownBy(() -> MockMapleLogger.get(clazz)).isInstanceOf(InvalidSchemaException.class));
+    }
+
+    @Test
+    void testDuplicates() {
+        MockMapleLogger<Duplicates> logger = MockMapleLogger.get(Duplicates.class);
+        logger.info(s -> s.id("a string").id(101));
+        logger.debug(s -> s.id("s"));
+        logger.warn(s -> s.id(42));
+        assertThat(logger.logging()).containsSequence(
+                new LogEvent(LoggingLevel.INFO, "id=\"a string\" id=101", null),
+                new LogEvent(LoggingLevel.DEBUG, "id=s", null),
+                new LogEvent(LoggingLevel.WARN, "id=42", null)
+        );
     }
 }

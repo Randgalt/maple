@@ -22,5 +22,7 @@ public interface Names {
 
     String nthName(int n);
 
+    String nthRawName(int n);
+
     Set<Specialization> nthSpecializations(int n);
 }

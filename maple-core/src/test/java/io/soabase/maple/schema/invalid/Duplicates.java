@@ -15,8 +15,12 @@
  */
 package io.soabase.maple.schema.invalid;
 
+import io.soabase.maple.api.annotations.SortOrder;
+
 public interface Duplicates {
+    @SortOrder(100)
     Duplicates id(int i);
 
+    @SortOrder(50)
     Duplicates id(String s);
 }

@@ -47,6 +47,11 @@ class NamesValuesImp implements NamesValues {
     }
 
     @Override
+    public String nthRawName(int n) {
+        return names.nthRawName(n);
+    }
+
+    @Override
     public Object nthValue(int n) {
         return arguments[n];
     }
