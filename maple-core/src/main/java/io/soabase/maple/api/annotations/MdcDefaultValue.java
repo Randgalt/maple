@@ -24,9 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Can be used with {@link io.soabase.maple.api.MapleFormatter}s that use Jackson
- * (e.g. {@link io.soabase.maple.formatters.ModelFormatter}. Fields annotated with this
- * will not get logged. For example, mark password fields or any other security sensitive fields.
+ * You can annotate schema methods with {@code @MdcDefaultValue}. For these methods if you do not specify a value directly,
+ * Maple will look in the MDC for the value
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
