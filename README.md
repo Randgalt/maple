@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Randgalt/maple.svg?branch=master)](https://travis-ci.org/Randgalt/maple)
+![Build Status](https://github.com/Randgalt/maple/workflows/Java%20CI%20with%20Maven/badge.svg)
 [![Maven Central](https://img.shields.io/maven-central/v/io.soabase.maple/maple-parent.svg)](http://search.maven.org/#search%7Cga%7C1%7Cmaple-slf4j)
 
 # Maple
