@@ -55,7 +55,7 @@ class Utils {
 
     private static void error(Logger logger, String msg, Throwable t) {
         if (t != null) {
-            logger.error(msg, t);
+            logger.error(t, msg);
         } else {
             logger.error(msg);
         }
@@ -63,7 +63,7 @@ class Utils {
 
     private static void warn(Logger logger, String msg, Throwable t) {
         if (t != null) {
-            logger.warn(msg, t);
+            logger.warn(t, msg);
         } else {
             logger.warn(msg);
         }
@@ -71,7 +71,7 @@ class Utils {
 
     private static void info(Logger logger, String msg, Throwable t) {
         if (t != null) {
-            logger.info(msg, t);
+            logger.info(msg + " %s", t);
         } else {
             logger.info(msg);
         }
@@ -79,7 +79,7 @@ class Utils {
 
     private static void debug(Logger logger, String msg, Throwable t) {
         if (t != null) {
-            logger.debug(msg, t);
+            logger.debug(t, msg, t);
         } else {
             logger.debug(msg);
         }
