@@ -11,6 +11,7 @@
         <module>maple-slf4j</module>
         <module>maple-benchmarks</module>
         <module>maple-examples</module>
+        <module>maple-airlift</module>
     </modules>
 
     <properties>
@@ -30,7 +31,7 @@
         <maven-install-plugin-version>3.0.0-M1</maven-install-plugin-version>
         <exec-maven-plugin-version>1.6.0</exec-maven-plugin-version>
         <maven-pmd-plugin-version>3.12.0</maven-pmd-plugin-version>
-        <dependency-check-maven-version>5.2.2</dependency-check-maven-version>
+        <dependency-check-maven-version>6.0.3</dependency-check-maven-version>
 
         <byte-buddy-version>1.4.33</byte-buddy-version>
         <jackson-version>2.10.0</jackson-version>
@@ -39,6 +40,7 @@
         <assertj-version>3.13.2</assertj-version>
         <jmh-version>1.21</jmh-version>
         <logback-version>1.2.3</logback-version>
+        <airlift-version>0.187</airlift-version>
     </properties>
 
     <name>Maple</name>
@@ -156,6 +158,36 @@
                 <groupId>org.openjdk.jmh</groupId>
                 <artifactId>jmh-generator-annprocess</artifactId>
                 <version>${jmh-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.airlift</groupId>
+                <artifactId>log</artifactId>
+                <version>${airlift-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.airlift</groupId>
+                <artifactId>log-manager</artifactId>
+                <version>${airlift-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-jdk14</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>log4j-over-slf4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>jcl-over-slf4j</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
