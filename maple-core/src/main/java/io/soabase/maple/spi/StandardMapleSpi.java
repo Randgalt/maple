@@ -33,9 +33,9 @@ public class StandardMapleSpi implements MapleSpi {
     }
 
     @Override
-    public <T> void consume(LevelLogger levelLogger, String mainMessage, Throwable t, Statement<T> statement, MetaInstance<T> metaInstance) {
+    public <T> void consume(LevelLogger levelLogger, String loggerName, String mainMessage, Throwable t, Statement<T> statement, MetaInstance<T> metaInstance) {
         NamesValues namesValues = applySpecializations(statement.toNamesValues(metaInstance));
-        metaInstance.formatter().apply(levelLogger, namesValues, mainMessage, t);
+        metaInstance.formatter().apply(levelLogger, loggerName, namesValues, mainMessage, t);
     }
 
     @Override

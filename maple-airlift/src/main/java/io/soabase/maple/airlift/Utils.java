@@ -15,28 +15,29 @@
  */
 package io.soabase.maple.airlift;
 
-import io.airlift.log.Logger;
 import io.soabase.maple.api.LevelLogger;
 import io.soabase.maple.api.LoggingLevel;
 
+import java.util.logging.Level;
+
 class Utils {
-    static boolean isEnabled(LoggingLevel level, Logger logger) {
+    static String isEnabledLoggerName(LoggingLevel level, AirliftLogger logger) {
         switch (level) {
             case ERROR:
-                return true;    // Airlift doesn't currently support this
+                return logger.getJavaLogger().isLoggable(Level.SEVERE) ? logger.getJavaLogger().getName() : null;
             case WARN:
-                return true;    // Airlift doesn't currently support this
+                return logger.getJavaLogger().isLoggable(Level.WARNING) ? logger.getJavaLogger().getName() : null;
             case INFO:
-                return logger.isInfoEnabled();
+                return logger.isInfoEnabled() ? logger.getJavaLogger().getName() : null;
             case DEBUG:
-                return logger.isDebugEnabled();
+                return logger.isDebugEnabled() ? logger.getJavaLogger().getName() : null;
             case TRACE:
-                return false;
+                return null;
         }
         throw new IllegalStateException();  // should never get here
     }
 
-    static LevelLogger levelLogger(LoggingLevel level, Logger logger) {
+    static LevelLogger levelLogger(LoggingLevel level, AirliftLogger logger) {
         switch (level) {
             case ERROR:
                 return (msg, t) -> error(logger, msg, t);
@@ -53,7 +54,7 @@ class Utils {
         throw new IllegalStateException();  // should never get here
     }
 
-    private static void error(Logger logger, String msg, Throwable t) {
+    private static void error(AirliftLogger logger, String msg, Throwable t) {
         if (t != null) {
             logger.error(t, msg);
         } else {
@@ -61,7 +62,7 @@ class Utils {
         }
     }
 
-    private static void warn(Logger logger, String msg, Throwable t) {
+    private static void warn(AirliftLogger logger, String msg, Throwable t) {
         if (t != null) {
             logger.warn(t, msg);
         } else {
@@ -69,7 +70,7 @@ class Utils {
         }
     }
 
-    private static void info(Logger logger, String msg, Throwable t) {
+    private static void info(AirliftLogger logger, String msg, Throwable t) {
         if (t != null) {
             logger.info(msg + " %s", t);
         } else {
@@ -77,7 +78,7 @@ class Utils {
         }
     }
 
-    private static void debug(Logger logger, String msg, Throwable t) {
+    private static void debug(AirliftLogger logger, String msg, Throwable t) {
         if (t != null) {
             logger.debug(t, msg, t);
         } else {

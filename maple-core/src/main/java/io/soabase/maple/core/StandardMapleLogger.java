@@ -20,21 +20,20 @@ import io.soabase.maple.spi.MapleSpi;
 import io.soabase.maple.spi.MetaInstance;
 
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 
 public class StandardMapleLogger<T, LOGGER> implements MapleLoggerBase<T> {
     private final MetaInstance<T> metaInstance;
     private final LOGGER logger;
     private final BiFunction<LoggingLevel, LOGGER, LevelLogger> levelLoggerProc;
-    private final BiPredicate<LoggingLevel, LOGGER> isEnabledProc;
+    private final BiFunction<LoggingLevel, LOGGER, String> isEnabledLoggerNameProc;
 
     public StandardMapleLogger(MetaInstance<T> metaInstance,
                                LOGGER logger,
-                               BiPredicate<LoggingLevel, LOGGER> isEnabledProc,
+                               BiFunction<LoggingLevel, LOGGER, String> isEnabledLoggerNameProc,
                                BiFunction<LoggingLevel, LOGGER, LevelLogger> levelLoggerProc) {
         this.metaInstance = metaInstance;
         this.logger = logger;
-        this.isEnabledProc = isEnabledProc;
+        this.isEnabledLoggerNameProc = isEnabledLoggerNameProc;
         this.levelLoggerProc = levelLoggerProc;
     }
 
@@ -44,8 +43,9 @@ public class StandardMapleLogger<T, LOGGER> implements MapleLoggerBase<T> {
 
     @Override
     public void consume(LoggingLevel loggingLevel, String mainMessage, Throwable t, Statement<T> statement) {
-        if (isEnabledProc.test(loggingLevel, logger)) {
-            MapleSpi.instance().consume(levelLoggerProc.apply(loggingLevel, logger), mainMessage, t, statement, metaInstance);
+        String loggerName = isEnabledLoggerNameProc.apply(loggingLevel, logger);
+        if (loggerName != null) {
+            MapleSpi.instance().consume(levelLoggerProc.apply(loggingLevel, logger), loggerName, mainMessage, t, statement, metaInstance);
         }
     }
 

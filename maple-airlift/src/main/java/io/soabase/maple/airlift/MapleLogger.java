@@ -15,7 +15,6 @@
  */
 package io.soabase.maple.airlift;
 
-import io.airlift.log.Logger;
 import io.soabase.maple.api.MapleLoggerApi;
 
 public interface MapleLogger<T> extends MapleLoggerApi<T> {
@@ -24,5 +23,5 @@ public interface MapleLogger<T> extends MapleLoggerApi<T> {
      *
      * @return airlift logger
      */
-    Logger logger();
+    AirliftLogger logger();
 }

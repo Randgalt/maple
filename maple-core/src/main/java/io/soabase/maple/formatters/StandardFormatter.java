@@ -74,7 +74,7 @@ public class StandardFormatter implements MapleFormatter {
     }
 
     @Override
-    public void apply(LevelLogger logger, NamesValues namesValues, String mainMessage, Throwable t) {
+    public void apply(LevelLogger logger, String loggerName, NamesValues namesValues, String mainMessage, Throwable t) {
         StringBuilder logMessage = new StringBuilder(STRING_BUILDER_CAPACITY);
         boolean needsSpace = false;
         boolean hasMainMessage = !mainMessage.isEmpty();

@@ -22,11 +22,11 @@ package io.soabase.maple.api;
 public interface MapleFormatter {
     /**
      * Apply generated name/value pairs and calling the underlying logger
-     *
-     * @param logger the logger proxy
+     *  @param logger the logger proxy
+     * @param loggerName
      * @param namesValues name/value pairs
      * @param mainMessage the main message to output or {@code ""}
      * @param t the exception to output or {@code null}
      */
-    void apply(LevelLogger logger, NamesValues namesValues, String mainMessage, Throwable t);
+    void apply(LevelLogger logger, String loggerName, NamesValues namesValues, String mainMessage, Throwable t);
 }

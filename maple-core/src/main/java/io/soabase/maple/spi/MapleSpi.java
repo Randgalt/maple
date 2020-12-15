@@ -25,7 +25,7 @@ public interface MapleSpi {
         return Loaders.mapleSpiLoader.instance();
     }
 
-    <T> void consume(LevelLogger levelLogger, String mainMessage, Throwable t, Statement<T> statement, MetaInstance<T> metaInstance);
+    <T> void consume(LevelLogger levelLogger, String loggerName, String mainMessage, Throwable t, Statement<T> statement, MetaInstance<T> metaInstance);
 
     <T> MetaInstance<T> generate(Class<T> schemaClass);
 

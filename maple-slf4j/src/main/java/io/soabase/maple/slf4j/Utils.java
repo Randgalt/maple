@@ -20,18 +20,18 @@ import io.soabase.maple.api.LevelLogger;
 import org.slf4j.Logger;
 
 class Utils {
-    static boolean isEnabled(LoggingLevel level, Logger logger) {
+    static String isEnabledLoggerName(LoggingLevel level, Logger logger) {
         switch (level) {
             case ERROR:
-                return logger.isErrorEnabled();
+                return logger.isErrorEnabled() ? logger.getName() : null;
             case WARN:
-                return logger.isWarnEnabled();
+                return logger.isWarnEnabled() ? logger.getName() : null;
             case INFO:
-                return logger.isInfoEnabled();
+                return logger.isInfoEnabled() ? logger.getName() : null;
             case DEBUG:
-                return logger.isDebugEnabled();
+                return logger.isDebugEnabled() ? logger.getName() : null;
             case TRACE:
-                return logger.isTraceEnabled();
+                return logger.isTraceEnabled() ? logger.getName() : null;
         }
         throw new IllegalStateException();  // should never get here
     }
