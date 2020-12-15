@@ -15,12 +15,11 @@
  */
 package io.soabase.maple.airlift;
 
-import io.airlift.log.Logger;
 import io.soabase.maple.core.StandardMapleLogger;
 import io.soabase.maple.spi.MetaInstance;
 
-class MapleLoggerImpl<T> extends StandardMapleLogger<T, Logger> implements MapleLogger<T> {
-    MapleLoggerImpl(MetaInstance<T> metaInstance, Logger logger) {
-        super(metaInstance, logger, Utils::isEnabled, Utils::levelLogger);
+class MapleLoggerImpl<T> extends StandardMapleLogger<T, AirliftLogger> implements MapleLogger<T> {
+    MapleLoggerImpl(MetaInstance<T> metaInstance, AirliftLogger logger) {
+        super(metaInstance, logger, Utils::isEnabledLoggerName, Utils::levelLogger);
     }
 }

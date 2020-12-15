@@ -33,7 +33,9 @@ public class MapleFactory {
      * @return {@link MapleLogger}
      */
     public static <T> MapleLogger<T> getLogger(String name, Class<T> schemaClass) {
-        return getLogger(Logger.get(name), schemaClass);
+        java.util.logging.Logger javaLogger = java.util.logging.Logger.getLogger(name);
+        Logger airliftLogger = Logger.get(name);
+        return getLogger(new AirliftLogger(airliftLogger, javaLogger), schemaClass);
     }
 
     /**
@@ -45,7 +47,7 @@ public class MapleFactory {
      * @return {@link MapleLogger}
      */
     public static <T> MapleLogger<T> getLogger(Class<?> clazz, Class<T> schemaClass) {
-        return getLogger(Logger.get(clazz), schemaClass);
+        return getLogger(clazz.getName(), schemaClass);
     }
 
     /**
@@ -55,7 +57,7 @@ public class MapleFactory {
      * @param schemaClass logging schema
      * @return {@link MapleLogger}
      */
-    public static <T> MapleLogger<T> getLogger(Logger logger, Class<T> schemaClass) {
+    public static <T> MapleLogger<T> getLogger(AirliftLogger logger, Class<T> schemaClass) {
         MetaInstance<T> metaInstance = MapleSpi.instance().generate(schemaClass);
         return new MapleLoggerImpl<>(metaInstance, logger);
     }

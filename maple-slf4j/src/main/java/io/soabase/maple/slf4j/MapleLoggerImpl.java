@@ -21,6 +21,6 @@ import org.slf4j.Logger;
 
 class MapleLoggerImpl<T> extends StandardMapleLogger<T, Logger> implements MapleLogger<T> {
     MapleLoggerImpl(MetaInstance<T> metaInstance, Logger logger) {
-        super(metaInstance, logger, Utils::isEnabled, Utils::levelLogger);
+        super(metaInstance, logger, Utils::isEnabledLoggerName, Utils::levelLogger);
     }
 }

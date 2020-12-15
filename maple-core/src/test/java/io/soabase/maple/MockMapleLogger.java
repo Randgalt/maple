@@ -40,7 +40,7 @@ class MockMapleLogger<T> extends StandardMapleLogger<T, Object> {
     }
 
     private MockMapleLogger(MetaInstance<T> metaInstance, List<LogEvent> logging) {
-        super(metaInstance, new Object(), (level, o) -> true, (level, o) -> (msg, t) -> logging.add(new LogEvent(level, msg, t)));
+        super(metaInstance, new Object(), (level, o) -> "dummy", (level, o) -> (msg, t) -> logging.add(new LogEvent(level, msg, t)));
         this.logging = logging;
     }
 }
