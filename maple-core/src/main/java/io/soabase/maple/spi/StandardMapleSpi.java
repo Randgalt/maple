@@ -29,7 +29,7 @@ public class StandardMapleSpi implements MapleSpi {
     @Override
     public <T> MetaInstance<T> generate(Class<T> schemaClass) {
         Names names = StandardNamesBuilder.build(schemaClass, Generator.getReservedMethodNames());
-        return generator.generate(names, schemaClass, ClassLoader.getSystemClassLoader(), formatter);
+        return generator.generate(names, schemaClass, schemaClass.getClassLoader(), formatter);
     }
 
     @Override
