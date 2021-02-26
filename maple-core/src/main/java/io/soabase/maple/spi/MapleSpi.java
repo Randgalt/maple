@@ -15,17 +15,14 @@
  */
 package io.soabase.maple.spi;
 
-import io.soabase.maple.api.LevelLogger;
-import io.soabase.maple.api.MapleFormatter;
-import io.soabase.maple.api.NamesValues;
-import io.soabase.maple.api.Statement;
+import io.soabase.maple.api.*;
 
 public interface MapleSpi {
     static MapleSpi instance() {
         return Loaders.mapleSpiLoader.instance();
     }
 
-    <T> void consume(LevelLogger levelLogger, String loggerName, String mainMessage, Throwable t, Statement<T> statement, MetaInstance<T> metaInstance);
+    <T> void consume(LevelLogger levelLogger, LoggingLevel loggingLevel, String loggerName, String mainMessage, Throwable t, Statement<T> statement, MetaInstance<T> metaInstance);
 
     <T> MetaInstance<T> generate(Class<T> schemaClass);
 

@@ -45,7 +45,7 @@ public class StandardMapleLogger<T, LOGGER> implements MapleLoggerBase<T> {
     public void consume(LoggingLevel loggingLevel, String mainMessage, Throwable t, Statement<T> statement) {
         String loggerName = isEnabledLoggerNameProc.apply(loggingLevel, logger);
         if (loggerName != null) {
-            MapleSpi.instance().consume(levelLoggerProc.apply(loggingLevel, logger), loggerName, mainMessage, t, statement, metaInstance);
+            MapleSpi.instance().consume(levelLoggerProc.apply(loggingLevel, logger), loggingLevel, loggerName, mainMessage, t, statement, metaInstance);
         }
     }
 

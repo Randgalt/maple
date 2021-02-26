@@ -157,7 +157,7 @@ class TestGeneration {
     void testCachingWithFormatters() {
         Names names = buildNames(BasicSchema.class);
 
-        MapleFormatter altFormatter = (logger, loggerName, namesValues, mainMessage, t) -> {};
+        MapleFormatter altFormatter = (logger, loggingLevel, loggerName, namesValues, mainMessage, t) -> {};
 
         MetaInstance<BasicSchema> metaInstance1 = generator.generate(names, BasicSchema.class, ClassLoader.getSystemClassLoader(), formatter);
         MetaInstance<BasicSchema> metaInstance2 = generator.generate(names, BasicSchema.class, ClassLoader.getSystemClassLoader(), altFormatter);
