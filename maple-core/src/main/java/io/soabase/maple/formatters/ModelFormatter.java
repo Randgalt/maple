@@ -114,7 +114,7 @@ public class ModelFormatter implements MapleFormatter {
     }
 
     @Override
-    public void apply(LevelLogger logger, String loggerName, NamesValues namesValues, String mainMessage, Throwable t) {
+    public void apply(LevelLogger logger, LoggingLevel loggingLevel, String loggerName, NamesValues namesValues, String mainMessage, Throwable t) {
         List<String> appliedNames = new ArrayList<>();
         List<Object> appliedValues = new ArrayList<>();
         for (int i = 0; i < namesValues.qty(); ++i) {
@@ -154,7 +154,7 @@ public class ModelFormatter implements MapleFormatter {
                 return Stream.empty();
             }
         };
-        formatter.apply(logger, loggerName, applied, mainMessage, t);
+        formatter.apply(logger, loggingLevel, loggerName, applied, mainMessage, t);
     }
 
     private Handler getHandler(JsonNode node) {

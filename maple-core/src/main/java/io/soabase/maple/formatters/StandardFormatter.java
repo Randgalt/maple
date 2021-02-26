@@ -15,6 +15,7 @@
  */
 package io.soabase.maple.formatters;
 
+import io.soabase.maple.api.LoggingLevel;
 import io.soabase.maple.api.MapleFormatter;
 import io.soabase.maple.api.NamesValues;
 import io.soabase.maple.api.LevelLogger;
@@ -74,7 +75,7 @@ public class StandardFormatter implements MapleFormatter {
     }
 
     @Override
-    public void apply(LevelLogger logger, String loggerName, NamesValues namesValues, String mainMessage, Throwable t) {
+    public void apply(LevelLogger logger, LoggingLevel loggingLevel, String loggerName, NamesValues namesValues, String mainMessage, Throwable t) {
         StringBuilder logMessage = new StringBuilder(STRING_BUILDER_CAPACITY);
         boolean needsSpace = false;
         boolean hasMainMessage = !mainMessage.isEmpty();
