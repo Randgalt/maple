@@ -39,7 +39,7 @@
         <junit-version>5.5.2</junit-version>
         <assertj-version>3.13.2</assertj-version>
         <jmh-version>1.21</jmh-version>
-        <logback-version>1.2.3</logback-version>
+        <logback-version>1.3.12</logback-version>
         <airlift-version>0.187</airlift-version>
     </properties>
 
